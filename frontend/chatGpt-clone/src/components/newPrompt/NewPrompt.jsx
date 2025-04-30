@@ -20,6 +20,7 @@ const NewPrompt = ({ data }) => {
 
   const queryClient = useQueryClient();
   const endRef = useRef(null);
+  const formRef = useRef(null);
 
   // Mutation to update chat data
   const mutation = useMutation({
@@ -48,6 +49,7 @@ const NewPrompt = ({ data }) => {
       queryClient
         .invalidateQueries({ queryKey: ["chat", data._id] })
         .then(() => {
+          formRef.current.reset();
           setQuestion("");
           setAnswer("");
           setImg({ isLoading: false, error: "", dbData: {}, aiData: {} });
@@ -70,19 +72,19 @@ const NewPrompt = ({ data }) => {
   // Scroll to the end of the chat
   useEffect(() => {
     endRef.current.scrollIntoView({ behavior: "smooth" });
-  }, [question, answer, img.dbData]);
+  }, [data, question, answer, img.dbData]);
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const text = e.target.text.value.trim();
     if (!text) return;
-    addMessage(text);
+    addMessage(text, false);
   };
 
   // Add a new message to the chat
-  const addMessage = async (text) => {
-    setQuestion(text);
+  const addMessage = async (text, isInitial) => {
+    if (!isInitial) setQuestion(text);
 
     const parts = img.aiData.inlineData
       ? [{ inlineData: img.aiData.inlineData }, { text }]
@@ -104,6 +106,16 @@ const NewPrompt = ({ data }) => {
       setAnswer("I'm unable to process that request.");
     }
   };
+  // In Production We Don't Need it
+  const hasRun = useRef(false);
+  useEffect(() => {
+    if (!hasRun.current) {
+      if (data?.history.length === 1) {
+        addMessage(data.history[0].parts[0].text, true);
+      }
+    }
+    hasRun.current = true;
+  }, []);
 
   return (
     <>
@@ -134,7 +146,7 @@ const NewPrompt = ({ data }) => {
       <div className="end-chat" ref={endRef}></div>
 
       {/* Input form */}
-      <form className="new-form" onSubmit={handleSubmit}>
+      <form className="new-form" onSubmit={handleSubmit} ref={formRef}>
         <Upload setImg={setImg} />
         <input type="text" name="text" placeholder="Ask me anything." />
         <button>
