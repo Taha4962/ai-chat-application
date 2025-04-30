@@ -112,7 +112,7 @@ backend/
 ### Steps:
 
 1. Clone the repository:
-   git clone https://github.com/your-repo/ai-chat-application.git
+   git clone https://github.com/Taha4962/ai-chat-application.git
    cd ai-chat-application
 
 # Backend
