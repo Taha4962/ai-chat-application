@@ -1,0 +1,33 @@
+/* Root layout container */
+.rootLayout {
+  padding: 16px 64px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styling */
+.rootLayout header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo styling */
+.rootLayout .logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  gap: 8px;
+}
+
+.rootLayout .logo img {
+  height: 32px;
+  width: 32px;
+}
+
+/* Main content styling */
+.rootLayout main {
+  flex: 1;
+  overflow: hidden;
+}
